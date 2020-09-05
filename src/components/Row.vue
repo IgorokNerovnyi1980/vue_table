@@ -12,8 +12,17 @@
     <p class="row--item">
       {{ data.email }}
     </p>
-    <button class="row--button">
+    <button
+      class="row--button green"
+      @click="editItem(data.id)"
+    >
       edit
+    </button>
+    <button
+      class="row--button red"
+      @click="deleteItem(data.id)"
+    >
+      delete
     </button>
   </div>
 </template>
@@ -28,9 +37,25 @@ export default {
       }),
     },
   },
+  methods: {
+    editItem(id) {
+      this.$store.commit('startEdit', id);
+      this.$router.push('/editor');
+    },
+    deleteItem(id) {
+      this.$store.commit('deleteUser', id);
+      localStorage.setItem('users', JSON.stringify(this.$store.state.users));
+    },
+  },
 };
 </script>
 <style scoped>
+.red {
+  background-color:red;
+}
+.green{
+  background-color:green;
+}
 .row{
     width:100%;
     display: flex;
@@ -49,15 +74,19 @@ export default {
     border-right:0.1rem solid black;
 }
 .row--button{
-    width:20%;
+    width:10%;
     height:100%;
     padding: 0.5rem 0;
     border:none;
     outline:none;
-    background:none;
+    color:white;
     cursor: pointer;
+    border-right:0.1rem solid white;
 }
 .row--item:last-child{
+    border-right:none;
+}
+.row--button:last-child{
     border-right:none;
 }
 </style>

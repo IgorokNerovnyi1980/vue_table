@@ -1,6 +1,9 @@
 <template>
   <section class="home">
-    <div class="home--table">
+    <div
+      v-if="users.length > 0"
+      class="home--table"
+    >
       <div class="home--table__titles">
         <p class="home--table__item">
           name
@@ -14,14 +17,17 @@
         <p class="home--table__item">
           email
         </p>
-        <p class="home--table__item" />
+        <p class="home--table__dump" />
       </div>
       <Row
-        v-for="item in table"
-        :key="item.name"
+        v-for="item in users"
+        :key="item.id"
         :data="item"
       />
     </div>
+    <p v-else>
+      no data to display
+    </p>
   </section>
 </template>
 <script>
@@ -33,14 +39,8 @@ export default {
     Row,
   },
   computed: {
-    table() {
-      return this.$store.state.table;
-    },
-  },
-  methods: {
-    increment() {
-      this.$store.commit('increment');
-      console.log(this.$store.state.count);
+    users() {
+      return this.$store.state.users;
     },
   },
 };
@@ -69,13 +69,12 @@ export default {
 }
 .home--table__item{
     width:20%;
-    flex-grow: 1;
     text-align: center;
     padding: 0.5rem 0;
     color:white;
     border-right:0.1rem solid white;
 }
-.home--table__item:last-child{
-    border-right:none;
+.home--table__dump{
+    width:20%;
 }
 </style>

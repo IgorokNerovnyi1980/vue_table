@@ -19,14 +19,33 @@ const router = new VueRouter({
 
 const store = new Vuex.Store({
   state: {
-    table: [{
-      name: 'first', surname: 'first surname', phone: '1111111', email: '1@.com',
-    }, {
-      name: 'second', surname: 'second surname', phone: '222222', email: '2@.com',
-    }],
+    users: [],
     item: null,
   },
   mutations: {
+    setUsers(state, arr) {
+      state.users = arr;
+    },
+    createUser(state, data) {
+      state.users = [...state.users, data];
+    },
+    startEdit(state, id) {
+      state.item = state.users.find((user) => user.id === id);
+    },
+    editUser(state, newData) {
+      state.item = state.users.map((user) => {
+        if (newData.id === user.id) {
+          return newData;
+        }
+        return user;
+      });
+    },
+    endEdit(state) {
+      state.item = null;
+    },
+    deleteUser(state, id) {
+      state.users = state.users.filter((user) => user.id !== id);
+    },
   },
 });
 new Vue({

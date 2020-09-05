@@ -13,6 +13,12 @@ export default {
   components: {
     Header,
   },
+  mounted() {
+    const data = JSON.parse(localStorage.getItem('users'));
+    if (data && data.length > 0) {
+      this.$store.commit('setUsers', data);
+    }
+  },
 };
 </script>
 
