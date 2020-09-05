@@ -46,6 +46,7 @@
       class="editor--form__input"
       type="file"
       accept="application/JSON"
+      @change="parseFile"
     >
   </section>
 </template>
@@ -65,44 +66,35 @@ export default {
     };
   },
   mounted() {
-    window.addEventListener('load', this.parseJson);
     if (this.$store.state.item) {
       this.newUser = this.$store.state.item;
       this.isEdit = true;
     }
   },
   destroyed() {
-    window.removeEventListener('load', this.parseJson);
     this.$store.commit('endEdit');
     this.isEdit = false;
   },
   methods: {
+    parseFile(e) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.readAsText(file);
+      reader.onload = (event) => {
+        try {
+          const result = JSON.parse(event.target.result);
+          this.newUser = { ...result };
+        } catch (err) {
+                alert(err.message); // eslint-disable-line
+        }
+      };
+    },
     saveUser() {
       if (!this.isEdit) {
         this.$store.commit('createUser', this.newUser);
       }
       localStorage.setItem('users', JSON.stringify(this.$store.state.users));
       this.$router.push('/home');
-    },
-    parseJson() {
-      const upload = this.$refs.fileInput;
-      if (upload) {
-        upload.addEventListener('change', () => {
-          if (upload.files.length > 0) {
-            const reader = new FileReader();
-            reader.addEventListener('load', () => {
-              try {
-                const result = JSON.parse(reader.result);
-                this.$store.commit('createUser', result);
-                this.$router.push('/home');
-              } catch (err) {
-                  alert(err.message); // eslint-disable-line
-              }
-            });
-            reader.readAsText(upload.files[0]);
-          }
-        });
-      }
     },
   },
 };
