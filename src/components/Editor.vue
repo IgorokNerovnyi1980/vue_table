@@ -41,28 +41,12 @@
         save
       </button>
     </div>
-    <form
-      class="editor--form"
+    <input
+      ref="fileInput"
+      class="editor--form__input"
+      type="file"
+      accept="application/JSON"
     >
-      <p>for JSON</p>
-      <input
-        class="editor--form__input"
-        type="text"
-        name="item"
-        placeholder="for one item"
-      >
-      <input
-        class="editor--form__input"
-        type="text"
-        name="arr"
-        placeholder="for arr items"
-      >
-      <button
-        class="editor--form__button"
-      >
-        save
-      </button>
-    </form>
   </section>
 </template>
 <script>
@@ -81,24 +65,44 @@ export default {
     };
   },
   mounted() {
+    window.addEventListener('load', this.parseJson);
     if (this.$store.state.item) {
       this.newUser = this.$store.state.item;
       this.isEdit = true;
     }
   },
   destroyed() {
+    window.removeEventListener('load', this.parseJson);
     this.$store.commit('endEdit');
     this.isEdit = false;
   },
   methods: {
     saveUser() {
-      if (this.isEdit) {
-        this.$store.commit('editUser', this.newUser);
-      } else {
+      if (!this.isEdit) {
         this.$store.commit('createUser', this.newUser);
       }
       localStorage.setItem('users', JSON.stringify(this.$store.state.users));
       this.$router.push('/home');
+    },
+    parseJson() {
+      const upload = this.$refs.fileInput;
+      if (upload) {
+        upload.addEventListener('change', () => {
+          if (upload.files.length > 0) {
+            const reader = new FileReader();
+            reader.addEventListener('load', () => {
+              try {
+                const result = JSON.parse(reader.result);
+                this.$store.commit('createUser', result);
+                this.$router.push('/home');
+              } catch (err) {
+                  alert(err.message); // eslint-disable-line
+              }
+            });
+            reader.readAsText(upload.files[0]);
+          }
+        });
+      }
     },
   },
 };
@@ -129,12 +133,4 @@ export default {
 .editor--form__input, .editor--form__button{
   padding:0.5rem 1rem;
 }
-@media (min-width: 900px) {
-
-  .editor{
-    flex-direction: row;
-    justify-content: space-evenly;
-    align-items: flex-start;
-}
- }
 </style>

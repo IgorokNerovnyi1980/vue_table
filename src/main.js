@@ -32,14 +32,6 @@ const store = new Vuex.Store({
     startEdit(state, id) {
       state.item = state.users.find((user) => user.id === id);
     },
-    editUser(state, newData) {
-      state.item = state.users.map((user) => {
-        if (newData.id === user.id) {
-          return newData;
-        }
-        return user;
-      });
-    },
     endEdit(state) {
       state.item = null;
     },

@@ -57,8 +57,8 @@ export default {
     align-items: flex-start;
 }
 .home--table{
-    width:90%;
-    max-width: 64rem;
+    width:95%;
+    max-width: 90rem;
 }
 .home--table__titles{
     width:100%;
